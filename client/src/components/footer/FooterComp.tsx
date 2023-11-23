@@ -1,7 +1,7 @@
 const FooterComp: React.FC = () => {
   return (
     <>
-      <footer className="bg-black">
+      <footer className="bg-black px-1 lg:px-0">
         <div className="container mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-white py-8">
             <div>
