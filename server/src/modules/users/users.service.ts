@@ -27,7 +27,23 @@ export class UsersService {
         },
         relations: ['posts'],
       });
-    } catch (error) {}
+    } catch (error) {
+      throw new HttpException("Can't get user", HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async findUserByIdService(id: number): Promise<any> {
+    console.log(id);
+
+    try {
+      return this.usersRepository.findOne({
+        where: {
+          id,
+        },
+      });
+    } catch (error) {
+      throw new HttpException("Can't get user", HttpStatus.BAD_REQUEST);
+    }
   }
 
   // lấy user theo email

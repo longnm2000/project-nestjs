@@ -113,8 +113,8 @@ const Drawer = styled(MuiDrawer, {
 const defaultTheme = createTheme();
 
 const schema = yup.object().shape({
-  name: yup.string().required("Name cannot be blank"),
-  description: yup.string().required("Name cannot be blank"),
+  name: yup.string().required("Field cannot be blank"),
+  description: yup.string().required("Field cannot be blank"),
 });
 
 interface Admin {

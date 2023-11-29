@@ -39,7 +39,7 @@ interface Category {
 }
 
 const schema = yup.object().shape({
-  categoryId: yup.string().required("Manufacturer is required"),
+  categoryId: yup.string().required("Field is required"),
   name: yup
     .string()
     .max(100, "string must not be longer than 100 characters")
@@ -164,6 +164,7 @@ export default function AddProductPage() {
   } = useForm({
     resolver: yupResolver(schema),
   });
+  const [isFocus, setIsFocus] = useState(false);
 
   const onSubmit = async (data: Product) => {
     if (!imageUrlAvatar) {
@@ -306,8 +307,12 @@ export default function AddProductPage() {
                         variant="outlined"
                         fullWidth
                         label="Pin"
-                        error={!!errors?.pin}
-                        helperText={errors?.pin?.message}
+                        onFocus={() => setIsFocus(true)}
+                        onBlur={() => {
+                          setIsFocus(false);
+                        }}
+                        error={!!errors?.pin && !isFocus}
+                        helperText={!isFocus ? errors?.pin?.message : ""}
                       />
                     )}
                   />

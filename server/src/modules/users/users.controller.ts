@@ -13,6 +13,8 @@ export class UserController {
   @Roles(Role.Admin)
   @UseGuards(AuthGuard)
   getUserById(@Param('id') id: string) {
+    console.log(id);
+
     return this.usersService.getUserByIdService(Number(id));
   }
   @Get()
@@ -22,5 +24,10 @@ export class UserController {
   @Patch('/:id')
   changeStatus(@Param('id') id: string, @Body() active: ChangeStatusDto) {
     return this.usersService.changeUserStatus(+id, active.active);
+  }
+
+  @Get('/find/:id')
+  findUser(@Param('id') id: string) {
+    return this.usersService.findUserByIdService(+id);
   }
 }

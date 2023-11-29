@@ -244,6 +244,7 @@ export default function OrdersManagerPage() {
 
   const handleLogOut = () => {
     handleCloseUserMenu();
+    localStorage.removeItem("admin");
     localStorage.removeItem("admin_token");
     Swal.fire({
       icon: "success",

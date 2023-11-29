@@ -15,6 +15,8 @@ import AdbIcon from "@mui/icons-material/Adb";
 import { Link, useNavigate } from "react-router-dom";
 
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import axios from "axios";
+import Swal from "sweetalert2";
 
 interface User {
   id: string;
@@ -26,6 +28,7 @@ interface User {
 }
 
 function HeaderComp() {
+  const apiURL = import.meta.env.VITE_API_URL;
   const userData = localStorage.getItem("user");
   const navigate = useNavigate();
   const user: User | null = userData ? JSON.parse(userData) : null;
@@ -81,6 +84,22 @@ function HeaderComp() {
     };
   }
 
+  const fetchData = async () => {
+    const res = await axios.get(`${apiURL}/users/find/${user?.id}`);
+    if (+res.data.active === 0) {
+      await Swal.fire({
+        icon: "error",
+        title: "Tài khoản bị khoá",
+        timer: 3000,
+      });
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("user");
+      navigate("/login");
+    }
+  };
+  React.useEffect(() => {
+    fetchData();
+  });
   return (
     <AppBar position="fixed">
       <Container maxWidth="xl">
