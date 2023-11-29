@@ -3,11 +3,13 @@ import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dto/login.dto';
+import { AdminsService } from '../admin/admin.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UsersService,
+    private readonly adminsService: AdminsService,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -34,6 +36,9 @@ export class AuthService {
       if (!isMatch) {
         return new HttpException('Wrong password', HttpStatus.UNAUTHORIZED);
       }
+      if (+user.active !== 1) {
+        return new HttpException('Account is blocked', HttpStatus.FORBIDDEN);
+      }
       const token = await this.createToken(user);
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -41,6 +46,35 @@ export class AuthService {
       return {
         status: 200,
         user: rest,
+        access_token: token,
+      };
+    } catch (error) {
+      console.log(error);
+      throw new HttpException('Wrong password', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async loginAdmin(infoUser: LoginDto): Promise<any> {
+    console.log(infoUser);
+
+    try {
+      const user = await this.adminsService.getByEmailService(infoUser.email);
+
+      if (!user) {
+        return new HttpException('Email Not Found', HttpStatus.NOT_FOUND);
+      }
+      const isMatch = await bcrypt.compare(infoUser.password, user.password);
+      if (!isMatch) {
+        return new HttpException('Wrong password', HttpStatus.UNAUTHORIZED);
+      }
+
+      const token = await this.createToken(user);
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { password, ...rest } = user;
+      return {
+        status: 200,
+        admin: rest,
         access_token: token,
       };
     } catch (error) {

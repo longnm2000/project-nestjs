@@ -6,6 +6,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import axios, { AxiosResponse } from "axios";
 import Swal, { SweetAlertOptions } from "sweetalert2";
+import HeaderComp from "../../../components/header/HeaderComp";
+import { Helmet } from "react-helmet";
 
 interface Account {
   email: string;
@@ -57,6 +59,13 @@ const LoginPage: React.FC = () => {
             timer: 3000,
           });
           break;
+        case 403:
+          Swal.fire({
+            title: "Tài khoản đã bị khoá",
+            icon: "error",
+            timer: 3000,
+          });
+          break;
         case 404:
           Swal.fire({
             title: "Email không tồn tại",
@@ -75,8 +84,12 @@ const LoginPage: React.FC = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Đăng nhập</title>
+      </Helmet>
+      <HeaderComp />
       <main className="bg-no-repeat bg-center bg-cover bg-[url('https://marshallvietnam.vn/wp-content/uploads/2022/10/marshal-banner.jpeg')] sm:py-5">
-        <div className="container mx-auto">
+        <div className="container mx-auto mt-28">
           <Form
             layout="vertical"
             className="sm:rounded-md max-w-xl p-10  bg-white"

@@ -46,9 +46,9 @@ export class Users {
 
   @Column({
     type: 'boolean',
-    default: true,
+    default: 1,
   })
-  active: string;
+  active: number;
 
   @OneToMany(() => Order, (order) => order.user)
   orders: Order[];

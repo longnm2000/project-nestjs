@@ -1,11 +1,50 @@
 import { Button } from "antd";
 import FooterComp from "../../../components/footer/FooterComp";
+import CardComp from "../../../components/card/CardComp";
+import { useEffect, useState } from "react";
+import axios, { AxiosResponse } from "axios";
+import HeaderComp from "../../../components/header/HeaderComp";
+import BannerComp from "../../../components/banner/BannerComp";
+import { Helmet } from "react-helmet";
+
+interface Product {
+  productId: string;
+  name: string;
+  price: string;
+  source: string;
+}
 
 const HomePage: React.FC = () => {
+  const apiURL = import.meta.env.VITE_API_URL;
+  const [data, setData] = useState<Product[] | null>(null);
+  const fetchData = async () => {
+    try {
+      const res: AxiosResponse = await axios.get(`${apiURL}/products`);
+      setData(res?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
     <>
-      <main className=" bg-slate-200 ">
+      <Helmet>
+        <title>Trang chủ</title>
+      </Helmet>
+      <HeaderComp />
+      <main className=" bg-slate-200 mt-16">
         <div className=" container mx-auto py-5">
+          <BannerComp />
+          <h1 className="my-4 font-bold text-2xl">SẢN PHẨM MỚI</h1>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 pb-4">
+            {data?.map((e, i) => (
+              <CardComp product={e} key={i} />
+            ))}
+          </div>
+
           <div className="bg-white grid md:grid-cols-2 rounded-md py-10 gap-10 px-5">
             <img
               src="https://marshallstorevietnam.vn/wp-content/uploads/2023/03/Middleton_Category-page_2-column-banner_desktop.png"
@@ -23,6 +62,7 @@ const HomePage: React.FC = () => {
                 </Button>
               </div>
             </div>
+            C C
           </div>
           <div className="bg-gradient-to-r from-black to-stone-600 mt-5 grid md:grid-cols-2 rounded-md py-10 gap-10 px-5">
             <img

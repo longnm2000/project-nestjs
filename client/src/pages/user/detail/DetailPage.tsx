@@ -5,6 +5,9 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import numeral from "numeral";
+import HeaderComp from "../../../components/header/HeaderComp";
+import CarouselComp from "../../../components/carousel/CarouselComp";
+import { Helmet } from "react-helmet";
 
 interface Product {
   productId: number;
@@ -61,13 +64,16 @@ const DetailPage: React.FC = () => {
 
   const [data, setData] = useState<Product | null>(null);
   const [images, setImages] = useState<Image[]>([]);
-  const [selectedQantity, setSelectedQuantity] = useState<number>(1);
+  const [selectedQuantity, setSelectedQuantity] = useState<number>(1);
   const fetchData = async () => {
-    const response = await axios.get(`${apiURL}/products/${id}`);
-
-    const imagesResponse = await axios.get(`${apiURL}/pictures/${id}`);
-    setData(response.data);
-    setImages(imagesResponse.data);
+    try {
+      const response = await axios.get(`${apiURL}/products/${id}`);
+      const imagesResponse = await axios.get(`${apiURL}/pictures/${id}`);
+      setData(response.data);
+      setImages(imagesResponse.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -81,7 +87,7 @@ const DetailPage: React.FC = () => {
   };
 
   const handleDecreaseQuantity = () => {
-    if (selectedQantity > 1) {
+    if (selectedQuantity > 1) {
       setSelectedQuantity((prevQuantity) => prevQuantity - 1);
     }
   };
@@ -96,7 +102,7 @@ const DetailPage: React.FC = () => {
         image:
           productAvatar?.source ||
           "https://static.vecteezy.com/system/resources/previews/005/337/799/non_2x/icon-image-not-found-free-vector.jpg",
-        quantity: selectedQantity,
+        quantity: selectedQuantity,
       };
       const existingCartItems: CartItem[] = JSON.parse(
         localStorage.getItem("cartItems") || "[]"
@@ -107,7 +113,7 @@ const DetailPage: React.FC = () => {
       );
 
       if (itemIndex !== -1) {
-        existingCartItems[itemIndex].quantity += selectedQantity;
+        existingCartItems[itemIndex].quantity += selectedQuantity;
       } else {
         existingCartItems.push(cartItem);
       }
@@ -130,8 +136,12 @@ const DetailPage: React.FC = () => {
 
   return (
     <>
+      <Helmet>
+        <title>{data?.name}</title>
+      </Helmet>
+      <HeaderComp />
       <main className="">
-        <div>
+        <div className="mt-24 container mx-auto">
           <Breadcrumb
             items={[
               {
@@ -148,7 +158,7 @@ const DetailPage: React.FC = () => {
         </div>
         <div className="grid sm:grid-cols-2 pb-10 container mx-auto px-1 sm:px-0">
           <div>
-            <img src={productAvatar?.source} alt="" className="w-full" />
+            <CarouselComp images={images} />
           </div>
           <div>
             <h1 className=" uppercase text-3xl font-bold">{data?.name}</h1>
@@ -192,11 +202,11 @@ const DetailPage: React.FC = () => {
                   className=" bg-black"
                   size="large"
                   onClick={handleDecreaseQuantity}
-                  disabled={selectedQantity === 1}
+                  disabled={selectedQuantity === 1}
                 >
                   <i className="fa-solid fa-minus"></i>
                 </Button>
-                <Input readOnly value={selectedQantity} size="large" />
+                <Input readOnly value={selectedQuantity} size="large" />
                 <Button
                   type="primary"
                   className=" bg-black"

@@ -7,6 +7,10 @@ import * as yup from "yup";
 import numeral from "numeral";
 import axios, { AxiosResponse } from "axios";
 import Swal, { SweetAlertOptions } from "sweetalert2";
+import { Box } from "@mui/material";
+import { Link } from "react-router-dom";
+import HeaderComp from "../../../components/header/HeaderComp";
+import { Helmet } from "react-helmet";
 
 interface CartItem {
   productId: string;
@@ -139,8 +143,12 @@ const CartPage: React.FC = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Giỏ hàng</title>
+      </Helmet>
+      <HeaderComp />
       <main className="py-10 bg-slate-200">
-        <div className="container mx-auto">
+        <div className="container mx-auto  mt-20">
           <div className="bg-white rounded-md p-5">
             {cartItems.filter((e) => +e.userId === +user.id).length > 0 &&
             !!user &&
@@ -246,6 +254,7 @@ const CartPage: React.FC = () => {
                     Tổng tiền: {numeral(getTotalPrice).format("0, ")} VNĐ
                   </p>
                 </div>
+                <p>Địa chỉ:</p>
                 <Form onFinish={handleSubmit(handlePlaceOrder)}>
                   <Form.Item>
                     <Controller
@@ -263,7 +272,24 @@ const CartPage: React.FC = () => {
                 </Form>
               </>
             ) : (
-              <>Không có sản phẩm</>
+              <Box
+                display={"flex"}
+                justifyContent={"center"}
+                alignItems={"center"}
+                paddingY={3}
+              >
+                <Box textAlign={"center"}>
+                  <img
+                    src="https://fptshop.com.vn/estore-images/empty-cart.png"
+                    alt=""
+                    width={"500px"}
+                  />
+                  <p>Không có sản phẩm trong giỏ hàng</p>
+                  <Link to={"/"}>
+                    <Button className="mt-4">Trang chủ</Button>
+                  </Link>
+                </Box>
+              </Box>
             )}
           </div>
         </div>

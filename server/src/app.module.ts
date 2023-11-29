@@ -11,6 +11,9 @@ import { PicturesModule } from './modules/pictures/pictures.module';
 import { Order } from './modules/order/entity/order.entity';
 import { OrderDetail } from './modules/orderDetail/entity/orderDetail.entity';
 import { OrderModule } from './modules/order/order.module';
+import { OrderDetailModule } from './modules/orderDetail/orderDetail.module';
+import { AdminsModule } from './modules/admin/admin.module';
+import { Admin } from './modules/admin/entity/admins.entity';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -20,7 +23,15 @@ import { OrderModule } from './modules/order/order.module';
       username: 'root',
       password: '12345678',
       database: 'project5',
-      entities: [Users, Categories, Products, Pictures, Order, OrderDetail],
+      entities: [
+        Users,
+        Categories,
+        Products,
+        Pictures,
+        Order,
+        OrderDetail,
+        Admin,
+      ],
       synchronize: true,
     }),
     AuthModule,
@@ -28,6 +39,8 @@ import { OrderModule } from './modules/order/order.module';
     ProductsModule,
     PicturesModule,
     OrderModule,
+    OrderDetailModule,
+    AdminsModule,
   ],
 })
 export class AppModule {}

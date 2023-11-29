@@ -1,8 +1,15 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { PicturesService } from './../pictures/pictures.service';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Products } from './entity/products.entity';
 import { Repository } from 'typeorm';
 import { CreateProductDto } from './dto/createProduct.dto';
+import { Pictures } from '../pictures/entity/pictures.entity';
 // import { UpdateProductDto } from './DTO/updateProduct.dto';
 
 @Injectable()
@@ -10,12 +17,25 @@ export class ProductsService {
   constructor(
     @InjectRepository(Products)
     private productRepository: Repository<Products>,
+    @InjectRepository(Pictures)
+    private pictureRepository: Repository<Pictures>,
+    private readonly picturesService: PicturesService,
   ) {}
 
   // get all
   async getAllProducts(): Promise<Products[]> {
     try {
-      return await this.productRepository.find();
+      return await this.productRepository
+        .createQueryBuilder('product')
+        .select('product.productId', 'productId')
+        .addSelect('product.name', 'name')
+        .addSelect('product.price', 'price')
+        .addSelect('pictures.source', 'source')
+        .addSelect('category.name', 'categoryName')
+        .leftJoin('product.pictures', 'pictures')
+        .leftJoin('product.category', 'category')
+        .where('pictures.type = :type', { type: true })
+        .getRawMany();
     } catch (error) {
       throw new Error('Unable to fetch products');
     }
@@ -125,10 +145,15 @@ export class ProductsService {
 
   // Create product
   async createProduct(productData: CreateProductDto): Promise<any> {
+    const { avatar, optionalImages, ...data } = productData;
     try {
-      const newProduct = await this.productRepository.create(productData);
-      await this.productRepository.save(newProduct);
-      return { message: 'Create product success' };
+      const newProduct = this.productRepository.create(data);
+      const result = await this.productRepository.save(newProduct);
+      await this.picturesService.createOtherPictures(result.productId, {
+        optionalImages,
+      });
+      await this.picturesService.createAvatar(result.productId, avatar);
+      return new HttpException('Add product successfully', HttpStatus.CREATED);
     } catch (error) {
       throw new Error('Create product error');
     }
@@ -163,10 +188,10 @@ export class ProductsService {
   //   }
 
   // Delete product
-  async deleteProduct(id: number): Promise<string> {
+  async deleteProduct(id: number): Promise<any> {
     try {
       await this.productRepository.delete(id);
-      return 'Delete successful';
+      return new HttpException('Delete product successfully', HttpStatus.OK);
     } catch (error) {
       throw new Error('Delete not successful');
     }

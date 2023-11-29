@@ -4,8 +4,10 @@ import { Module } from '@nestjs/common';
 import { OrderController } from './order.controller';
 import { OrderService } from './order.service';
 
+import { OrderDetailModule } from '../orderDetail/orderDetail.module';
+
 @Module({
-  imports: [TypeOrmModule.forFeature([Order])],
+  imports: [OrderDetailModule, TypeOrmModule.forFeature([Order])],
   controllers: [OrderController],
   providers: [OrderService],
   exports: [OrderService],

@@ -7,4 +7,7 @@ export class CreateProductDto {
   connect: string;
   weight: number;
   description: string;
+  avatar?: string;
+  optionalImages?: string[];
+  categoryId: number;
 }

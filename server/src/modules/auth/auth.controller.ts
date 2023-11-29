@@ -16,4 +16,10 @@ export class AuthController {
   async login(@Body() loginBody: LoginDto) {
     return this.authService.login(loginBody);
   }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('/admin/login')
+  async adminLogin(@Body() loginBody: LoginDto) {
+    return this.authService.loginAdmin(loginBody);
+  }
 }

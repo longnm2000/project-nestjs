@@ -21,7 +21,7 @@ export class ProductsController {
   async getAllProducts() {
     try {
       const products = await this.ProductsService.getAllProducts();
-      return { message: 'GET ALL', rows: products };
+      return products;
     } catch (error) {
       return { error: 'Internal Server Error' };
     }
@@ -98,11 +98,10 @@ export class ProductsController {
 
   // Delete product
   @Delete(':id')
-  async deleteProduct(@Param('id') id: string) {
+  async deleteProduct(@Param('id') id: number) {
     try {
-      const productId = parseInt(id, 10);
-      const result = await this.ProductsService.deleteProduct(productId);
-      return { message: result };
+      const result = await this.ProductsService.deleteProduct(id);
+      return result;
     } catch (error) {
       return { message: 'Delete not successful' };
     }

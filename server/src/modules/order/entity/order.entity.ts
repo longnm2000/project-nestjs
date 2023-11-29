@@ -26,6 +26,9 @@ export class Order {
   @Column({ type: 'text', nullable: false })
   address: string;
 
+  @Column({ type: 'int', nullable: false, default: 0 })
+  status: number;
+
   @CreateDateColumn()
   createAt: Date;
 

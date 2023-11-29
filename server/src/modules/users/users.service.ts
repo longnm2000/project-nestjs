@@ -45,4 +45,40 @@ export class UsersService {
       throw new HttpException("Can't get user", HttpStatus.BAD_REQUEST);
     }
   }
+  async getAllUser() {
+    try {
+      const users = await this.usersRepository.find();
+      if (users) {
+        return users;
+      }
+    } catch (error) {
+      throw new HttpException("Can't get user", HttpStatus.BAD_REQUEST);
+    }
+  }
+  async changeUserStatus(userId: number, newStatus: number): Promise<any> {
+    try {
+      const user = await this.usersRepository.findOne({
+        where: { id: userId },
+      });
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      await this.usersRepository
+        .createQueryBuilder()
+        .update(Users)
+        .set({ active: newStatus })
+        .where('id = :id', { id: userId })
+        .execute();
+      return new HttpException(
+        'Update status for this user success',
+        HttpStatus.OK,
+      );
+    } catch (error) {
+      throw new HttpException(
+        "Can't update status for this user",
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
 }

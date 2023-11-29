@@ -6,6 +6,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import axios, { AxiosResponse } from "axios";
 import Swal, { SweetAlertOptions } from "sweetalert2";
+import HeaderComp from "../../../components/header/HeaderComp";
+import { Helmet } from "react-helmet";
 
 interface RegisterInfo {
   name: string;
@@ -71,8 +73,12 @@ const RegisterPage: React.FC = () => {
   };
   return (
     <>
+      <HeaderComp />
+      <Helmet>
+        <title>Đăng ký</title>
+      </Helmet>
       <main className="bg-gradient-to-r from-purple-500 to-pink-500 sm:py-5">
-        <div className="container mx-auto">
+        <div className="container mx-auto mt-20">
           <Form
             layout="vertical"
             className="sm:rounded-md max-w-lg p-10 mx-auto bg-white"

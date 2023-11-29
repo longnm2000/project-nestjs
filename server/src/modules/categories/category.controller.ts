@@ -1,4 +1,12 @@
-import { Controller, Get, Param, Body, Post } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Body,
+  Post,
+  Delete,
+  Put,
+} from '@nestjs/common';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/createCategory.dto';
@@ -17,8 +25,19 @@ export class CategoryController {
     return await this.CategoryService.findOne(Number(id));
   }
 
-  @Post('/')
+  @Post()
   async createCategory(@Body() categoryData: CreateCategoryDto): Promise<any> {
     return await this.CategoryService.createCategory(categoryData);
+  }
+  @Delete('/:id')
+  async deleteCategory(@Param('id') id: number): Promise<any> {
+    return await this.CategoryService.deleteCategory(id);
+  }
+  @Put(':id')
+  async updateCategory(
+    @Param('id') id: number,
+    @Body() updateData: CreateCategoryDto,
+  ): Promise<any> {
+    return await this.CategoryService.updateCategory(id, updateData);
   }
 }
